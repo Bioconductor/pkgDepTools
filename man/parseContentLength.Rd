@@ -1,49 +1,22 @@
 \name{parseContentLength}
 \alias{parseContentLength}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+
+\title{Parse HTTP Response Header for Content Length}
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+  Given a string containing an HTTP response header, extract the
+  \code{"Content-Length"} header and convert it to a numeric value.
+  If no such header is found, return \code{NA}.
 }
 \usage{
 parseContentLength(h)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{h}{ ~~Describe \code{h} here~~ }
+  \item{h}{string containing the HTTP response header}
 }
 \details{
-  ~~ If necessary, more details than the description above ~~
+  Internal function
 }
-\value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
-}
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(h) {
-    fldName <- "Content-Length:"
-    sizeRegex <- "^.*Content-Length: ([0-9]+)[\r\n]+.*"
-    ## Return size in megabytes
-    if (length(grep(fldName, h)))
-      as.numeric(sub(sizeRegex, "\\1", h)) / 1024^2
-    else
-      as.numeric(NA)
-  }
-}
-\keyword{ ~kwd1 }% at least one, from doc/KEYWORDS
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\author{Seth Falcon}
+\keyword{utilities}

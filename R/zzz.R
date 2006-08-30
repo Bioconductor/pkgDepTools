@@ -1,5 +1,6 @@
 globals <- new.env(parent=emptyenv(), hash=TRUE)
 
+
 .First.lib <- function(libname, pkgname) {
     globals$have_RCurl <- suppressWarnings(require("RCurl", quietly=TRUE))
     ## FIXME: temporary fix since RCurl segfaults 
@@ -8,3 +9,4 @@ globals <- new.env(parent=emptyenv(), hash=TRUE)
         globals$have_RCurl <- FALSE
     }
 }
+.onLoad <- .First.lib

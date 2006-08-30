@@ -3,38 +3,30 @@
 \alias{pkgDepTools}
 \docType{package}
 \title{
-What the package does (short line)
-~~ package title ~~
+Package Dependency Tools
 }
 \description{
-More about what it does (maybe more than one line)
-~~ A concise (1-5 lines) description of the package ~~
+
+  This package provides tools for computing and analyzing dependency
+  relationships among R packages.  It provides tools for building a
+  graph-based representation of the dependencies among all packages in
+  a list of CRAN-style package repositories.  There are also utilities
+  for computing installation order of a given package.  If the RCurl
+  package is available, an estimate of the download size required to
+  install a given package and its dependencies can be obtained.
+
 }
 \details{
 \tabular{ll}{
 Package: \tab pkgDepTools\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2006-08-21\cr
-License: \tab What license is it under?\cr
+License: \tab GPL2\cr
 }
-~~ An overview of how to use the package, including the most important functions ~~
+
 }
 \author{
-Who wrote it
-
-Maintainer: Who to complain to <yourfault@somewhere.net>
-~~ The author and/or maintainer of the package ~~
-}
-\references{
-~~ Literature or other references for background information ~~
+Seth Falcon
+Maintainer: Seth Falcon <sfalcon@fhcrc.org>
 }
 \keyword{ package }
-~~ Optionally other keywords from doc/KEYWORDS, one per line
-\seealso{
-~~ Optional links to other man pages, e.g. ~~
-~~ \code{\link[<pkg>:<pkg>-package]{<pkg>}} ~~
-}
-\examples{
-~~ simple examples of the most important functions ~~
-}
+

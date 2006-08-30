@@ -1,58 +1,47 @@
 \name{getInstallOrder}
 \alias{getInstallOrder}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+
+\title{List package dependencies in install order}
+
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+
+  This function uses a dependency graph created with
+  \code{makeDepGraph} to list all (recursive) dependencies of a
+  given package in an order suitable for installation.
+
 }
+
 \usage{
 getInstallOrder(pkg, depG, needed.only = TRUE)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
-  \item{pkg}{ ~~Describe \code{pkg} here~~ }
-  \item{depG}{ ~~Describe \code{depG} here~~ }
-  \item{needed.only}{ ~~Describe \code{needed.only} here~~ }
-}
-\details{
-  ~~ If necessary, more details than the description above ~~
-}
-\value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
-}
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
+  \item{pkg}{character string name of package}
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(pkg, depG, needed.only=TRUE) {
-    toInst <- basicInstallOrder(pkg, depG)
-    if (needed.only)
-      toInst <- setdiff(toInst, rownames(installed.packages()))
-    if (length(toInst)) {
-        sizes <- unlist(nodeData(depG, n=toInst, attr="size"))
-        sizesC <- as.character(round(sizes, 2))
-        sizesC[is.na(sizes)] <- "?"
-        sizesC <- paste(sizesC, "MB", sep="")
-        names(toInst) <- sizesC
-        total <- sum(sizes[!is.na(sizes)])
-        list(packages=toInst, total.size=total)
-    } else {
-        list(packages=character(0), total.size=numeric(0))
+  \item{depG}{\code{graphNEL} instance as returned from
+      \code{makeDepGraph}.  
     }
-  }
+
+  \item{needed.only}{logical value.  When \code{TRUE}, only those
+      dependencies not currently installed are included in the list,
+      this is the default.  When \code{FALSE} the complete list of
+      dependencies is given regardless of the set of currently
+      installed packages.}
 }
-\keyword{ ~kwd1 }% at least one, from doc/KEYWORDS
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+
+\value{
+  a list with components:
+
+  \item{packages }{character vector of package names in an order
+      suitable for installation.  The order is not unique.  The names
+      of the character vector are the estimated download sizes of each
+      package.}
+
+  \item{total.size}{When available, the total size in
+      megabytes of all listed dependencies.}
+}
+
+
+\author{Seth Falcon}
+
+\keyword{utilities}

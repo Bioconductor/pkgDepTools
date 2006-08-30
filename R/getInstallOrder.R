@@ -1,5 +1,4 @@
-"getInstallOrder" <-
-function(pkg, depG, needed.only=TRUE) {
+getInstallOrder <- function(pkg, depG, needed.only=TRUE) {
     toInst <- basicInstallOrder(pkg, depG)
     if (needed.only)
       toInst <- setdiff(toInst, rownames(installed.packages()))

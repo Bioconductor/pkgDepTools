@@ -1,5 +1,4 @@
-"parseContentLength" <-
-function(h) {
+parseContentLength <- function(h) {
     fldName <- "Content-Length:"
     sizeRegex <- "^.*Content-Length: ([0-9]+)[\r\n]+.*"
     ## Return size in megabytes

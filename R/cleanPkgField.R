@@ -1,5 +1,4 @@
-"cleanPkgField" <-
-function(val) {
+cleanPkgField <- function(val) {
     ## Given the value from a field like 'Depends' in a package's
     ## DESCRIPTION file, return a character vector of package names
     ## with the version restrictions stripped and \R~removed.

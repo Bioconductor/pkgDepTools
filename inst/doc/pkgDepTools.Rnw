@@ -1,66 +1,36 @@
+\documentclass[12pt]{article}
+
+\newcommand{\file}[1]{{\texttt{#1}}}
+\newcommand{\code}[1]{{\texttt{#1}}}
 \newcommand{\Rfunction}[1]{{\texttt{#1}}}
 \newcommand{\Robject}[1]{{\texttt{#1}}}
 \newcommand{\Rpackage}[1]{{\textsf{#1}}}
 \newcommand{\Rclass}[1]{{\textit{#1}}}
+\newcommand{\acronym}[1]{{\textsf{#1}}}
 
-\title{Modeling Package Dependencies Using Graphs}
+\title{How to Use pkgDepTools}
 \author{Seth Falcon \\
 Program in Computational Biology\\
 Fred Hutchinson Cancer Research Center}
 
+\begin{document}
+
 \maketitle
 
-\section*{Introduction}
+\section{Introduction}
 
-Dealing with packages that have many dependencies, such as those
-in the Bioconductor repository, can be a frustrating experience for
-users.  At present, there are no tools to list, recursively, all of a
-package's dependencies, nor is there a way to estimate the download
-size required to install a given package.
+The \Rpackage{pkgDepTools} package provides tools for computing and
+analyzing dependency relationships among R packages.  With it, you can
+build a graph-based representation of the dependencies among all
+packages in a list of CRAN-style package repositories.  There are
+utilities for computing installation order of a given package and, if
+the RCurl package is available, estimating the download size required
+to install a given package and its dependencies.
 
-In this article we use the \Rpackage{graph} package to model the
-dependencies among packages in the BioC and \acronym{CRAN}
-repositories and to build tools for inspecting the dependency
-relationships among packages, generating the complete list of
-dependencies of a given package, and estimating the total download
-size required to install a package and its dependencies.  Aside from
-this particular application to package dependencies, the approach
-taken is instructive for those interested in modeling and analyzing
-relationship data using graphs.
+This vignette demonstrates the basic features of the package.
 
-Deciding how to represent the data in a graph structure and
-transforming the available data into a graph object are first steps of
-any graph-based analysis.  We describe in detail the function
-used to generate a graph representing the dependency relationships
-among \R~packages as the general approach can be adapted for other
-types of data.
 
-We also demonstrate some of the methods available in
-\Rpackage{graph}, \Rpackage{RBGL}, and \Rpackage{Rgraphviz} to analyze
-and visualize graphs.
-
-% Finally, we will construct a function that uses the dependency graph
-% to list the complete dependencies of a given package in an order
-% suitable for building and installing those packages and provide an
-% estimate of the total required download size.
-
-\section*{Modeling Package Dependencies}
-
-An \R~package can make use of functions defined in another
-\R~package by listing the package in the \code{Depends} field of its
-\file{DESCRIPTION} file.  The \Rfunction{available.packages} function
-returns a matrix of meta data for the packages in a specified list of
-\acronym{CRAN}-style \R~package repositories. Among the data returned
-is a list of dependencies for each package.
-
-To illustrate our method, we use data from Bioconductor's package
-repositories as well as the \acronym{CRAN} repository.  The
-Bioconductor project strongly encourages package contributors to use
-the dependency mechanism and build on top of code in other packages.
-The success of this code reuse policy can be measured by examining the
-dependencies of Bioconductor packages.  As we will see, packages in
-the Bioconductor software repository have, on average, much richer
-dependency relationships than the packages hosted on \acronym{CRAN}.
+\section{Graph Basics}
 
 A graph consists of a set of nodes and a set of edges representing
 relationships between pairs of nodes.  The relationships among the
@@ -69,36 +39,23 @@ nodes or there is not.  To model package dependencies using a graph,
 let the set of packages be the nodes of the graph with directed edges
 originating from a given package to each of its dependencies.
 Figure~\ref{fig:Category} shows a part of the Bioconductor dependency
-graph corresponding to the \Rpackage{Category} package.  Since
-circular dependencies are not allowed, the resulting dependency graph
-will be a directed acyclic graph (\acronym{DAG}).
+graph for to the \Rpackage{Category} package.  Since circular
+dependencies are not allowed, the resulting dependency graph will be a
+directed acyclic graph (\acronym{DAG}).
 
-The \file{DESCRIPTION} file of an \R~package also contains a
-\code{Suggests} field which can be used by package authors to specify
-packages that provide optional features.  The interpretation and use
-of the \code{Suggests} field varies, and the graph resulting from
-using this relationship in the Bioconductor repository is not a
-\acronym{DAG}; cycles are created by packages suggesting each other.
-
-
-\section*{Building a Dependency Graph}
-
-To carry out the analysis, we need four Bioconductor packages and one
-Omegahat\footnote{\url{http://www.omegahat.org}} package (along with
-all of their dependencies, of course).  You can install these packages
-on your system using \Rfunction{biocLite} as shown below.
+\section{Building a Dependency Graph}
 
 <<setup, echo=TRUE, results=hide>>=
 library("pkgDepTools")
+library("Biobase")
 library("Rgraphviz")
 @ 
 
-We now describe the \Rfunction{makeDepGraph} function that retrieves
-the meta data for all packages of a specified type (source,
-win.binary, or mac.binary) from each repository in list of repository
-URLs and builds a \Rclass{graphNEL}\footnote{See
-  \Robject{help("graphNEL-class")}} instance representing the packages
-and their dependency relationships.
+The \Rfunction{makeDepGraph} function retrieves the meta data for all
+packages of a specified type (source, win.binary, or mac.binary) from
+each repository in a list of repository URLs and builds a
+\Rclass{graphNEL}\footnote{See \Robject{help("graphNEL-class")}}
+instance representing the packages and their dependency relationships.
 
 The function takes four arguments: 1) \Robject{repList} a character
 vector of \acronym{CRAN}-style package repository URLs; 2)
@@ -106,53 +63,23 @@ vector of \acronym{CRAN}-style package repository URLs; 2)
 resulting graph should represent relations from the \code{Depends}
 field (\code{FALSE}, default) or the \code{Suggests} field
 (\code{TRUE}); 3) \Robject{type} a string indicating the type of
-packages to search for, the default is \code{"source"}; 4)
+packages to search for, the default is \code{getOption("pkgType")}; 4)
 \Robject{keep.builtin} which will keep packages that come with a
-standard \R~install in the dependency graph (the default is
+standard R install in the dependency graph (the default is
 \Robject{FALSE}).
-
-The definition of \Rfunction{makeDepGraph} is shown in
-Figure~\ref{fig:makeDepGraph}.  The function obtains a matrix of
-package meta data from each repository using
-\Rfunction{available.packages}.  A new \Rclass{graphNEL} instance is
-created using \Rfunction{new}.  A node attribute with name ``size'' is
-added to the graph with default value \Robject{NA}.  When
-\Robject{keep.builtin} is \Robject{FALSE} (the default), a list of
-packages that come with a standard \R~install is retrieved and stored
-in \Robject{baseOrRecPkgs}.
-
-Iterating through each package's meta data, the appropriate field
-(either Depends and Imports or Suggests) is parsed using a helper
-function \Rfunction{cleanPkgField}.  If the user has not set
-\Robject{keep.builtin} to \Robject{TRUE}, the packages that come with
-\R~are removed from \Robject{deps}, the list of the current package's
-dependencies.  Then for each package in \Robject{deps},
-\Rfunction{addNode} is used to add it to the graph if it is not
-already present.  \Rfunction{addEdge} is then used to create edges
-from the package to its dependencies.  The size in megabytes of the
-package is retrieved using \Rfunction{getDownloadSize} and is then
-stored as a node attribute using \Rfunction{nodeData}.  Finally, the
-resulting \Rclass{graphNEL}, \Robject{depG} is returned.  A downside
-of this iterative approach to the construction of the graph is that
-the \Rfunction{addNode} and \Rfunction{addEdge} methods create a new
-copy of the entire graph each time they are called.  This will be
-inefficient for very large graphs.
-
-Definitions for the helper functions \Rfunction{cleanPkgField},
-\Rfunction{makePkgUrl}, and \Rfunction{getDownloadSize} are available
-online.
 
 Here we use \Rfunction{makeDepGraph} to build dependency graphs of the
 BioC and \acronym{CRAN} packages.  Each dependency graph is a
 \Rclass{graphNEL} instance.  The out-edges of a given node list its
 direct dependencies (as shown for package \Rpackage{annotate}).  The
-node attribute ``size'' gives the size of the package in megabytes.
+node attribute ``size'' gives the size of the package in megabytes
+(only if RCurl is available).
 
 <<testMakeDepGraph0, cache=TRUE, results=hide, echo=TRUE>>=
 biocUrl <- biocReposList()["bioc"]
 cranUrl <- biocReposList()["cran"]
-biocDeps <- makeDepGraph(biocUrl)
-cranDeps <- makeDepGraph(cranUrl)
+biocDeps <- makeDepGraph(biocUrl, type="source")
+cranDeps <- makeDepGraph(cranUrl, type="source")
 @ 
 %
 <<testMakeDepGraph>>=
@@ -162,37 +89,8 @@ edges(biocDeps)["annotate"]
 nodeData(biocDeps, n="annotate", attr="size")
 @ 
 
-The \Rfunction{degree} and \Rfunction{connectedComp} methods can be
-used to compare the BioC and CRAN dependency graphs.  Here we observe
-that the mean number of direct dependencies (out degree of nodes) is
-larger in BioC than it is in CRAN.
 
-<<compareBiocAndCran>>=
-mean(degree(biocDeps)$outDegree)
-mean(degree(cranDeps)$outDegree)
-@ 
-
-A subgraph is connected if there is a path between every pair of
-nodes.  The \Rpackage{RBGL} package's \Rfunction{connectedComp} method
-returns a list of the largest connected subgraphs.  Examining the
-distribution of the sizes (number of nodes) of the connected
-components in the two dependency graphs, we can see that the BioC
-graph has relatively fewer length one components and that more of the
-graph is a part of the largest component (87\% of packages for BioC vs
-50\% for \acronym{CRAN}).  The two tables below give the size of the
-connected components (top row) and the number of connected components
-of that size found in the graph (bottom row).
-
-<<connectedComponents>>=
-table(listLen(connectedComp(cranDeps)))
-table(listLen(connectedComp(biocDeps)))
-
-@ 
-
-Both results demonstrate the higher level of interdependency of
-packages in the BioC repository.
-
-\section*{Using the Dependency Graph}
+\section{Using the Dependency Graph}
 
 The dependencies of a given package can be visualized using the graph
 generated by \Rfunction{makeDepGraph} and the \Rpackage{Rgraphviz}
@@ -219,55 +117,21 @@ plot(categoryGraph, nodeAttrs=nn)
 \label{fig:Category}
 \end{figure}
 
-In \R~, there is no easy to way to preview a given package's
+In R, there is no easy to way to preview a given package's
 dependencies and estimate the amount of data that needs to be
 downloaded even though the \Rfunction{install.packages} function will
 search for and install package dependencies if you ask it to by
-specifying \code{dependencies=TRUE}.  Next we will devise a function
-that provides such a ``preview'' by making use of the dependency graph.
+specifying \code{dependencies=TRUE}.  The \Rfunction{getInstallOrder}
+function provides such a ``preview''.
 
-%% Although it is not essential in R that a package and its dependencies
-%% be installed in order, there are situations where obtaining the proper
-%% installation order is useful. 
+For computing installation order, it is useful to have a single graph
+representing the relationships among all packages in all available
+repositories.  Below, we create such a graph combinging all CRAN and
+Bioconductor packages.
 
-Given a plot of a dependency graph like the one for
-\Rpackage{Category} shown in Figure~\ref{fig:Category}, one can devise
-a simple strategy to determine the install order.  Namely, find the
-packages that have no dependencies, the leaves of the graph, and
-install those first.  Then repeat that process on the graph that
-results from removing the leaves from the current graph.  The download
-size is easily computed by retrieving the ``size'' node attribute for
-each package in the dependency list.
-
-% The \textit{installation order} for a package is a depth-first
-% traversal of the subgraph induced by the given package's accessibility
-% list.  For the \Rpackage{Category} package, we can see that For
-% example,
-
-Figure~\ref{fig:basicInstallOrder} shows the definition of
-\Rfunction{basicInstallOrder}, a function that generates the complete
-list of dependencies for a given package using the strategy outlined
-above.  The \Rfunction{tsort} function from \Rpackage{RBGL} performs a
-topological sort of the directed graph.  A topological sort on a
-\acronym{DAG} gives an ordering of the nodes in which node $a$ comes
-before $b$ if there is an edge from $a$ to $b$.  Reversing the
-topological sort yields a valid install order.
-
-
-The \Rfunction{basicInstallOrder} function can be used as the core of
-a ``preview'' function for package installation.  The preview
-function, call it \Rfunction{getInstallOrder}, will return the list of
-\textit{uninstalled} dependencies of a given package in proper install
-order along with the size, in megabytes, of each package.  In
-addition, the function will return the total expected download size.
-An implementation of \Rfunction{getInstallOrder} is available online.
-Below we demonstrate the \Rfunction{getInstallOrder} function.
-
-
-First, we create a single dependency graph for all \acronym{CRAN} and
-BioC packages.
 <<demo-setup, cache=TRUE>>=
-allDeps <- makeDepGraph(biocReposList())
+allDeps <- makeDepGraph(biocReposList(), type="source",
+                        keep.builtin=TRUE)
 
 @ 
 
@@ -285,3 +149,20 @@ returned regardless of what packages are currently installed.
 <<demo2>>=
 getInstallOrder("GOstats", allDeps, needed.only=FALSE)
 @ 
+
+The edge directions of the dependency graph can be revered and the
+resulting graph used to determine the set of packages that make use of
+(even indirectly) a given package.  For example, one might like to
+know which packages make use of the \Rpackage{methods} package.  Here
+is one way to do that:
+
+<<whoDependsOnMe>>=
+allDepsOnMe <- reverseEdgeDirections(allDeps)
+usesMethods <- dijkstra.sp(allDepsOnMe, start="methods")$distance
+usesMethods <- usesMethods[is.finite(usesMethods)]
+length(usesMethods) - 1 ## don't count methods itself
+table(usesMethods)
+
+@ 
+
+\end{document}

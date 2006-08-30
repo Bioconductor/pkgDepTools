@@ -1,12 +1,21 @@
 Package: pkgDepTools
 Type: Package
 Title: Package Dependency Tools
-Version: 0.0.1
-Date: 2006-08-21
+Version: 0.0.2
+Date: 2006-08-30
 Author: Seth Falcon
 Maintainer: Seth Falcon <sfalcon@fhcrc.org>
-Description: More about what it does (maybe more than one line)
+Description: This package provides tools for computing and analyzing 
+             dependency relationships among R packages.  It provides
+             tools for building a graph-based representation of the
+             dependencies among all packages in a list of CRAN-style
+             package repositories.  There are also utilities for 
+             computing installation order of a given package.  If
+             the RCurl package is available, an estimate of the 
+             download size required to install a given package and
+             its dependencies can be obtained.
 License: GPL2
-Depends: methods, Biobase, graph, RBGL, RCurl
-Suggests: Rgraphviz
+Depends: methods, graph, RBGL
+Suggests: Biobase, Rgraphviz, RCurl
 biocViews: Infrastructure
+LazyLoad: Yes

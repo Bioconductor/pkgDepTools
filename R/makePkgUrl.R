@@ -1,5 +1,4 @@
-"makePkgUrl" <-
-function(pMat, type=getOption("pkgType")) {
+makePkgUrl <- function(pMat, type=getOption("pkgType")) {
     pkg <- paste(pMat[, "Package"], pMat[, "Version"], sep="_")
     ext <- switch(type,
                   source="tar.gz",

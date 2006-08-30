@@ -1,5 +1,4 @@
-"getInstallOrder0" <-
-function(pkg, depG, sugG=NULL, needed.only=FALSE) {
+getInstallOrder0 <- function(pkg, depG, sugG=NULL, needed.only=FALSE) {
     deps <- basicInstallOrder(pkg, depG)
     if (!is.null(sugG)) {
         sugs <- edges(sugG)[[pkg]]

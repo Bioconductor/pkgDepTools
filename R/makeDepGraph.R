@@ -1,7 +1,6 @@
-"makeDepGraph" <-
-function(repList, suggests.only=FALSE,
+makeDepGraph <- function(repList, suggests.only=FALSE,
                          type=getOption("pkgType"), 
-                         keep.builtin=FALSE)
+                         keep.builtin=FALSE, dosize=TRUE)
 {
     ## Return a directed graphNEL instance.  Each package is a node,
     ## an edge goes from a package to each of its direct dependencies.
@@ -39,8 +38,10 @@ function(repList, suggests.only=FALSE,
                 deps <- deps[!is.na(deps)]
                 depG <- addEdge(from=p, to=deps, depG)
             }
-            size <- getDownloadSize(makePkgUrl(pMat[p, , drop=FALSE]))
-            nodeData(depG, n=p, attr="size") <- size
+            if (dosize) {
+                size <- getDownloadSize(makePkgUrl(pMat[p, , drop=FALSE]))
+                nodeData(depG, n=p, attr="size") <- size
+            }
         }
     }
     depG

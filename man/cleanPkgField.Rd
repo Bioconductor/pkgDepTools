@@ -22,13 +22,10 @@ cleanPkgField(val)
 }
 
 \author{Seth Falcon}
-\note{
 
-\section{Warning }{
-  
+\section{Warning}{
   FIXME: uses a private function from tools
-
 }
 
-}
+
 \keyword{utilities}

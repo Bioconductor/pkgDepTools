@@ -1,3 +1,8 @@
+%\VignetteIndexEntry{How to Use pkgDepTools}
+%\VignetteDepends{Biobase, Rgraphviz}
+%\VignetteSuggests{RCurl}
+%\VignetteKeywords{graphs, dependency, DAG, package}
+%\VignettePackage{pkgDepTools}
 \documentclass[12pt]{article}
 
 \newcommand{\file}[1]{{\texttt{#1}}}
@@ -126,7 +131,7 @@ function provides such a ``preview''.
 
 For computing installation order, it is useful to have a single graph
 representing the relationships among all packages in all available
-repositories.  Below, we create such a graph combinging all CRAN and
+repositories.  Below, we create such a graph combining all CRAN and
 Bioconductor packages.
 
 <<demo-setup, cache=TRUE>>=
@@ -150,7 +155,7 @@ returned regardless of what packages are currently installed.
 getInstallOrder("GOstats", allDeps, needed.only=FALSE)
 @ 
 
-The edge directions of the dependency graph can be revered and the
+The edge directions of the dependency graph can be reversed and the
 resulting graph used to determine the set of packages that make use of
 (even indirectly) a given package.  For example, one might like to
 know which packages make use of the \Rpackage{methods} package.  Here

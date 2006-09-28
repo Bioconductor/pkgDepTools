@@ -16,5 +16,5 @@ Description: This package provides tools for computing and analyzing
 License: GPL2
 Depends: methods, graph, RBGL
 Suggests: Biobase, Rgraphviz, RCurl
-biocViews: Infrastructure
+biocViews: Infrastructure, GraphsAndNetworks
 LazyLoad: Yes

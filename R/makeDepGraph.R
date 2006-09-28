@@ -38,11 +38,12 @@ makeDepGraph <- function(repList, suggests.only=FALSE,
                 deps <- deps[!is.na(deps)]
                 depG <- addEdge(from=p, to=deps, depG)
             }
-            if (dosize) {
-                size <- getDownloadSize(makePkgUrl(pMat[p, , drop=FALSE]))
-                nodeData(depG, n=p, attr="size") <- size
-            }
         }
+        if (dosize) {
+            sizes <- getDownloadSizes(makePkgUrl(pMat))
+            nodeData(depG, n=rownames(pMat), attr="size") <- sizes
+        }
+
     }
     depG
 }

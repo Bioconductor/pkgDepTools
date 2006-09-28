@@ -50,6 +50,10 @@ directed acyclic graph (\acronym{DAG}).
 
 \section{Building a Dependency Graph}
 
+<<setup0, echo=FALSE, results=hide>>=
+options(width=72)
+@ 
+
 <<setup, echo=TRUE, results=hide>>=
 library("pkgDepTools")
 library("Biobase")

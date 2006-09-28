@@ -10,3 +10,20 @@ getDownloadSize <- function(url) {
     ans
 }
 
+getDownloadSizes <- function(urls) {
+    ## Fetch HTTP headers for a vector of URLs
+    ## This appears to be much faster than looping over getDownloadSize
+    ## for individual URLs.
+    if (globals$have_RCurl) {
+        h <- multiTextGatherer(urls)
+        junk <- getURIAsynchronous(urls, write=h, header=TRUE, nobody=TRUE)
+        headerContents <- sapply(h, function(x) {
+            parseContentLength(x$value())
+        })
+    } else {
+        headerContents <- rep(as.numeric(NA), length(urls))
+        names(headerContents) <- urls
+    }
+    headerContents
+}
+

@@ -40,7 +40,7 @@ makeDepGraph <- function(repList, suggests.only=FALSE,
             }
         }
         if (dosize) {
-            sizes <- getDownloadSizes(makePkgUrl(pMat))
+            sizes <- getDownloadSizesBatched(makePkgUrl(pMat))
             nodeData(depG, n=rownames(pMat), attr="size") <- sizes
         }
 

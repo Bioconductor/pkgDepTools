@@ -27,3 +27,32 @@ getDownloadSizes <- function(urls) {
     headerContents
 }
 
+
+getDownloadSizesBatched <- function(urls) {
+    if (globals$have_RCurl) {
+        BATCH <- 20
+        done <- FALSE
+        start <- 1
+        N <- length(urls)
+        headerContents <- numeric(N)
+        while(!done) {
+            end <- start + BATCH
+            if (end >= N) {
+                end <- N
+                done <- TRUE
+            }
+            batchIdx <- seq.int(start, end)
+            h <- multiTextGatherer(urls[batchIdx])
+            junk <- getURIAsynchronous(urls[batchIdx], write=h,
+                                       header=TRUE, nobody=TRUE)
+            headerContents[batchIdx] <- sapply(h, function(x) {
+                parseContentLength(x$value())
+            })
+            start <- end + 1
+        }
+    } else {
+        headerContents <- rep(as.numeric(NA), length(urls))
+    }
+    names(headerContents) <- urls
+    headerContents
+}

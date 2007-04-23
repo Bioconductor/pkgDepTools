@@ -1,7 +1,7 @@
 Package: pkgDepTools
 Type: Package
 Title: Package Dependency Tools
-Version: 1.1.1
+Version: 1.1.2
 Author: Seth Falcon
 Maintainer: Seth Falcon <sfalcon@fhcrc.org>
 Description: This package provides tools for computing and analyzing 
@@ -15,6 +15,7 @@ Description: This package provides tools for computing and analyzing
              its dependencies can be obtained.
 License: GPL2
 Depends: methods, graph, RBGL
+Imports: graph, RBGL
 Suggests: Biobase, Rgraphviz, RCurl
 biocViews: Infrastructure, GraphsAndNetworks
 LazyLoad: Yes

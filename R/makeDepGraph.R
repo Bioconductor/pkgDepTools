@@ -29,6 +29,7 @@ makeDepGraph <- function(repList, suggests.only=FALSE,
             } else {
                 deps <- cleanPkgField(pMat[p, "Suggests"])
             }
+            deps <- unique(deps)
             if (length(deps) && !keep.builtin)
               deps <- deps[!(deps %in% baseOrRecPkgs)]
             if (length(deps)) {

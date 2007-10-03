@@ -1,7 +1,7 @@
 Package: pkgDepTools
 Type: Package
 Title: Package Dependency Tools
-Version: 1.4.0
+Version: 1.5.0
 Author: Seth Falcon
 Maintainer: Seth Falcon <sfalcon@fhcrc.org>
 Description: This package provides tools for computing and analyzing 

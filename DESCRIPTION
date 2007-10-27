@@ -3,7 +3,7 @@ Type: Package
 Title: Package Dependency Tools
 Version: 1.5.0
 Author: Seth Falcon
-Maintainer: Seth Falcon <sfalcon@fhcrc.org>
+Maintainer: Seth Falcon <seth@userprimary.net>
 Description: This package provides tools for computing and analyzing 
              dependency relationships among R packages.  It provides
              tools for building a graph-based representation of the

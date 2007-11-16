@@ -14,13 +14,12 @@
 \newcommand{\acronym}[1]{{\textsf{#1}}}
 
 \title{How to Use pkgDepTools}
-\author{Seth Falcon \\
-Program in Computational Biology\\
-Fred Hutchinson Cancer Research Center}
+\author{Seth Falcon}
 
 \begin{document}
 
 \maketitle
+\SweaveOpts{keep.source=TRUE}
 
 \section{Introduction}
 
@@ -82,22 +81,25 @@ BioC and \acronym{CRAN} packages.  Each dependency graph is a
 \Rclass{graphNEL} instance.  The out-edges of a given node list its
 direct dependencies (as shown for package \Rpackage{annotate}).  The
 node attribute ``size'' gives the size of the package in megabytes
-(only if RCurl is available).
+when the \Robject{dosize} argument is \Robject{TRUE} (this is the
+default).  Obtaining the size of packages requires the
+\Rpackage{RCurl} package and can be time consuming for large
+repositories since a seprate HTTP request must be made for each
+package.  In the examples below, we set \Robject{dosize=FALSE} to
+speed the computations.
 
 <<testMakeDepGraph0, cache=TRUE, results=hide, echo=TRUE>>=
 biocUrl <- biocReposList()["bioc"]
-cranUrl <- biocReposList()["cran"]
-biocDeps <- makeDepGraph(biocUrl, type="source")
-cranDeps <- makeDepGraph(cranUrl, type="source")
+biocDeps <- makeDepGraph(biocUrl, type="source", dosize=FALSE)
 @ 
 %
 <<testMakeDepGraph>>=
 biocDeps
-cranDeps
 edges(biocDeps)["annotate"]
-nodeData(biocDeps, n="annotate", attr="size")
+## if dosize=TRUE, size in MB is stored
+## as a node attribute:
+## nodeData(biocDeps, n="annotate", attr="size")
 @ 
-
 
 \section{Using the Dependency Graph}
 
@@ -140,7 +142,7 @@ Bioconductor packages.
 
 <<demo-setup, cache=TRUE>>=
 allDeps <- makeDepGraph(biocReposList(), type="source",
-                        keep.builtin=TRUE)
+                        keep.builtin=TRUE, dosize=FALSE)
 
 @ 
 

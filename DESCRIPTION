@@ -1,7 +1,7 @@
 Package: pkgDepTools
 Type: Package
 Title: Package Dependency Tools
-Version: 1.11.0
+Version: 1.11.1
 Author: Seth Falcon
 Maintainer: Seth Falcon <seth@userprimary.net>
 Description: This package provides tools for computing and analyzing 
@@ -13,7 +13,7 @@ Description: This package provides tools for computing and analyzing
              the RCurl package is available, an estimate of the 
              download size required to install a given package and
              its dependencies can be obtained.
-License: GPL2
+License: GPL-2
 Depends: methods, graph, RBGL
 Imports: graph, RBGL
 Suggests: Biobase, Rgraphviz, RCurl

@@ -26,6 +26,7 @@ makeDepGraph <- function(repList, suggests.only=FALSE,
             if (!suggests.only) {
                 deps <- cleanPkgField(pMat[p, "Depends"])
                 deps <- c(deps, cleanPkgField(pMat[p, "Imports"]))
+                deps <- c(deps, cleanPkgField(pMat[p, "LinkingTo"]))
             } else {
                 deps <- cleanPkgField(pMat[p, "Suggests"])
             }

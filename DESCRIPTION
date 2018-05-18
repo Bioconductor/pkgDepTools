@@ -5,7 +5,7 @@ Version: 1.47.0
 Authors@R: c(
     person("Seth", "Falcon", role="aut"),
     person(
-        "Bioconductor Core Team",
+        "Bioconductor Package", "Maintainer",
         email = "maintainer@bioconductor.org",
         role = "cre"
     ))

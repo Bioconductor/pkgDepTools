@@ -1,7 +1,7 @@
 Package: pkgDepTools
 Type: Package
 Title: Package Dependency Tools
-Version: 1.47.1
+Version: 1.47.2
 Authors@R: c(
     person("Seth", "Falcon", role="aut"),
     person(
@@ -20,6 +20,6 @@ Description: This package provides tools for computing and analyzing
 License: GPL-2
 Depends: methods, graph, RBGL
 Imports: graph, RBGL
-Suggests: Biobase, Rgraphviz, RCurl, BiocInstaller
+Suggests: Biobase, Rgraphviz, RCurl, BiocManager
 LazyLoad: Yes
 biocViews: Infrastructure, GraphAndNetwork

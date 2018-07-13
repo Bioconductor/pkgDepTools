@@ -89,8 +89,8 @@ package.  In the examples below, we set \Robject{dosize=FALSE} to
 speed the computations.
 
 <<testMakeDepGraph0, cache=TRUE, results=hide, echo=TRUE>>=
-library(BiocInstaller)
-biocUrl <- biocinstallRepos()["BioCsoft"]
+library(BiocManager)
+biocUrl <- repositories()["BioCsoft"]
 biocDeps <- makeDepGraph(biocUrl, type="source", dosize=FALSE)
 @ 
 %
@@ -142,7 +142,7 @@ repositories.  Below, we create such a graph combining all CRAN and
 Bioconductor packages.
 
 <<demo-setup, cache=TRUE>>=
-allDeps <- makeDepGraph(biocinstallRepos(), type="source",
+allDeps <- makeDepGraph(repositories(), type="source",
                         keep.builtin=TRUE, dosize=FALSE)
 
 @ 

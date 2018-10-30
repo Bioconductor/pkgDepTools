@@ -1,7 +1,7 @@
 Package: pkgDepTools
 Type: Package
 Title: Package Dependency Tools
-Version: 1.47.2
+Version: 1.48.0
 Authors@R: c(
     person("Seth", "Falcon", role="aut"),
     person(
